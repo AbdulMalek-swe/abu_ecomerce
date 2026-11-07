@@ -71,11 +71,11 @@ export function ProductInfiniteGrid({
   // Empty State
   if (allProducts.length === 0) {
     return (
-      <div className="bg-white rounded-3xl border border-slate-200/80 p-12 text-center flex flex-col items-center justify-center my-8">
+      <div className="bg-white rounded-3xl border border-slate-200/80 p-8 sm:p-12 text-center flex flex-col items-center justify-center my-6 sm:my-8">
         <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 mb-4">
           <PackageOpen className="w-8 h-8" />
         </div>
-        <h3 className="text-lg font-bold text-slate-800 mb-1">
+        <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-1">
           {commonBn.noProductsFound}
         </h3>
         <p className="text-xs sm:text-sm text-slate-500 max-w-sm mb-6 leading-relaxed">
@@ -94,9 +94,9 @@ export function ProductInfiniteGrid({
   }
 
   return (
-    <div className="space-y-8">
-      {/* Product Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+    <div className="space-y-6 sm:space-y-8">
+      {/* Product Cards Grid: 2 cols on mobile (360px-639px), 3 cols on tablet (sm:), 4 cols on desktop (lg:) */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-5 lg:gap-6">
         {displayedProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
@@ -109,7 +109,7 @@ export function ProductInfiniteGrid({
             <p className="text-center text-xs font-semibold text-slate-500 mb-4 animate-pulse">
               {productsBn.loadingMore}
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-5 lg:gap-6">
               <ProductSkeleton />
               <ProductSkeleton />
               <ProductSkeleton />
