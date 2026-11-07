@@ -5,7 +5,7 @@ import { Product } from "@/types";
 import { ProductCard } from "@/components/products/ProductCard";
 import { ProductSkeleton } from "@/components/products/ProductSkeleton";
 import { productsBn, commonBn } from "@/locales/bn";
-import { PackageOpen, RotateCcw, AlertTriangle, CheckCircle } from "lucide-react";
+import { PackageOpen, CheckCircle } from "lucide-react";
 
 interface ProductInfiniteGridProps {
   allProducts: Product[];
@@ -18,76 +18,29 @@ export function ProductInfiniteGrid({
   batchSize = 6,
   onResetFilters,
 }: ProductInfiniteGridProps) {
-  const [displayedProducts, setDisplayedProducts] = useState<Product[]>([]);
-  const [hasMore, setHasMore] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(batchSize);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [hasError, setHasError] = useState(false);
 
-  // Safeguards to prevent duplicate requests and duplicate products
+  // Safeguards to prevent duplicate / concurrent requests
   const isFetchingRef = useRef(false);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
-  const seenIdsRef = useRef<Set<string>>(new Set());
 
-  // Initialize or reset list when incoming allProducts changes
-  useEffect(() => {
-    isFetchingRef.current = false;
-    setHasError(false);
+  // Derived state avoids cascading renders
+  const displayedProducts = allProducts.slice(0, visibleCount);
+  const hasMore = visibleCount < allProducts.length;
 
-    const initialBatch = allProducts.slice(0, batchSize);
-    const seen = new Set<string>();
-    const deduplicated: Product[] = [];
-
-    initialBatch.forEach((p) => {
-      if (!seen.has(p.id)) {
-        seen.add(p.id);
-        deduplicated.push(p);
-      }
-    });
-
-    seenIdsRef.current = seen;
-    setDisplayedProducts(deduplicated);
-    setHasMore(allProducts.length > deduplicated.length);
-  }, [allProducts, batchSize]);
-
-  // Load next batch
   const loadNextBatch = useCallback(() => {
     if (isFetchingRef.current || !hasMore) return;
 
     isFetchingRef.current = true;
     setIsLoadingMore(true);
-    setHasError(false);
 
-    // Simulate async network fetch
     setTimeout(() => {
-      try {
-        const currentCount = seenIdsRef.current.size;
-        const nextItems = allProducts.slice(currentCount, currentCount + batchSize);
-
-        if (nextItems.length === 0) {
-          setHasMore(false);
-          setIsLoadingMore(false);
-          isFetchingRef.current = false;
-          return;
-        }
-
-        const newItems: Product[] = [];
-        nextItems.forEach((p) => {
-          if (!seenIdsRef.current.has(p.id)) {
-            seenIdsRef.current.add(p.id);
-            newItems.push(p);
-          }
-        });
-
-        setDisplayedProducts((prev) => [...prev, ...newItems]);
-        setHasMore(seenIdsRef.current.size < allProducts.length);
-      } catch {
-        setHasError(true);
-      } finally {
-        setIsLoadingMore(false);
-        isFetchingRef.current = false;
-      }
-    }, 400);
-  }, [allProducts, batchSize, hasMore]);
+      setVisibleCount((prev) => prev + batchSize);
+      setIsLoadingMore(false);
+      isFetchingRef.current = false;
+    }, 350);
+  }, [batchSize, hasMore]);
 
   // Setup Intersection Observer on the sentinel
   useEffect(() => {
@@ -103,7 +56,7 @@ export function ProductInfiniteGrid({
       },
       {
         root: null,
-        rootMargin: "200px",
+        rootMargin: "250px",
         threshold: 0.1,
       }
     );
@@ -165,20 +118,6 @@ export function ProductInfiniteGrid({
           </div>
         )}
 
-        {hasError && (
-          <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm flex flex-col sm:flex-row items-center gap-3">
-            <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0" />
-            <span>{productsBn.loadError}</span>
-            <button
-              onClick={loadNextBatch}
-              className="px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-lg text-xs flex items-center gap-1.5 transition-colors"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>{commonBn.retry}</span>
-            </button>
-          </div>
-        )}
-
         {!hasMore && displayedProducts.length > 0 && (
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 text-slate-500 text-xs font-semibold">
             <CheckCircle className="w-4 h-4 text-emerald-600" />
@@ -189,4 +128,3 @@ export function ProductInfiniteGrid({
     </div>
   );
 }
-

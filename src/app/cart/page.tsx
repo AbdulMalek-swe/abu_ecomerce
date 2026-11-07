@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
-import { cartBn, commonBn, validationBn } from "@/locales/bn";
+import { cartBn, validationBn } from "@/locales/bn";
 import { formatPrice } from "@/lib/formatters/currency";
 import { toBnDigits } from "@/lib/formatters/number";
 import {

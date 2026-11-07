@@ -64,38 +64,31 @@ function validateCartItems(data: unknown): CartItem[] {
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [toasts, setToasts] = useState<ToastState[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  // Initialize and validate from LocalStorage
-  useEffect(() => {
+  // Lazy initialization avoids setState in effect
+  const [items, setItems] = useState<CartItem[]>(() => {
+    if (typeof window === "undefined") return [];
     try {
       const stored = localStorage.getItem(CART_STORAGE_KEY);
       if (stored) {
-        const parsed = JSON.parse(stored);
-        const validated = validateCartItems(parsed);
-        setItems(validated);
+        return validateCartItems(JSON.parse(stored));
       }
     } catch {
-      // safely fallback to empty array if json corrupted
-      setItems([]);
-    } finally {
-      setIsLoaded(true);
+      // fallback
     }
-  }, []);
+    return [];
+  });
 
-  // Sync to LocalStorage safely
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [toasts, setToasts] = useState<ToastState[]>([]);
+
+  // Sync to LocalStorage on updates
   useEffect(() => {
-    if (isLoaded) {
-      try {
-        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
-      } catch {
-        // ignore quota errors
-      }
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+    } catch {
+      // ignore storage errors
     }
-  }, [items, isLoaded]);
+  }, [items]);
 
   const showToast = (message: string, type: "success" | "error" | "info" = "success") => {
     const id = Date.now() + Math.random();

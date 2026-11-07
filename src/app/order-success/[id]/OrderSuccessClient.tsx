@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useOrders } from "@/context/OrderContext";
-import { checkoutBn, commonBn, orderStatusDetails, getOrderStatusLabel } from "@/locales/bn";
+import { checkoutBn, orderStatusDetails, getOrderStatusLabel } from "@/locales/bn";
 import { formatPrice } from "@/lib/formatters/currency";
 import { toBnDigits } from "@/lib/formatters/number";
 import {

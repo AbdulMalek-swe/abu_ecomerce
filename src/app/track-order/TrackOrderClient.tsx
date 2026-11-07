@@ -1,9 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
 import { useOrders } from "@/context/OrderContext";
 import { Order, BackendOrderStatus } from "@/types";
 import {
@@ -18,42 +16,36 @@ import { toBnDigits } from "@/lib/formatters/number";
 import {
   Truck,
   Search,
-  CheckCircle,
-  Clock,
-  Package,
-  MapPin,
-  Phone,
   AlertCircle,
-  ChevronRight,
   ShieldAlert,
 } from "lucide-react";
 
 export function TrackOrderClient() {
   const searchParams = useSearchParams();
-  const { findOrderForTracking, orders } = useOrders();
+  const { findOrderForTracking } = useOrders();
 
-  const [orderId, setOrderId] = useState(searchParams.get("orderId") || "");
-  const [phone, setPhone] = useState(searchParams.get("phone") || "");
-  const [searchedOrder, setSearchedOrder] = useState<Order | null>(null);
-  const [hasSearched, setHasSearched] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const initialOrderId = searchParams.get("orderId") || "";
+  const initialPhone = searchParams.get("phone") || "";
 
-  // Auto-search if query params exist
-  useEffect(() => {
-    const qOrderId = searchParams.get("orderId");
-    const qPhone = searchParams.get("phone");
-    if (qOrderId && qPhone) {
-      setOrderId(qOrderId);
-      setPhone(qPhone);
-      executeSearch(qOrderId, qPhone);
+  const [orderId, setOrderId] = useState(initialOrderId);
+  const [phone, setPhone] = useState(initialPhone);
+  const [searchedOrder, setSearchedOrder] = useState<Order | null>(() => {
+    if (initialOrderId && initialPhone) {
+      return findOrderForTracking(initialOrderId, initialPhone) || null;
     }
-  }, [searchParams]);
+    return null;
+  });
+  const [isSearching, setIsSearching] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(() => {
+    if (initialOrderId && initialPhone && !findOrderForTracking(initialOrderId, initialPhone)) {
+      return ordersBn.notFoundDesc;
+    }
+    return "";
+  });
 
   const executeSearch = (idToSearch: string, phoneToSearch: string) => {
     setErrorMessage("");
     setIsSearching(true);
-    setHasSearched(true);
 
     setTimeout(() => {
       const found = findOrderForTracking(idToSearch, phoneToSearch);
@@ -64,7 +56,7 @@ export function TrackOrderClient() {
         setErrorMessage(ordersBn.notFoundDesc);
       }
       setIsSearching(false);
-    }, 300);
+    }, 250);
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -232,7 +224,6 @@ export function TrackOrderClient() {
               <div className="py-4">
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                   {ordersBn.timelineSteps.map((step, idx) => {
-                    const stepStatusKey = step.key as BackendOrderStatus;
                     const isPassed = currentStepIndex >= idx;
                     const isCurrent = currentStepIndex === idx;
 

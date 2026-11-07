@@ -7,7 +7,6 @@ import {
   Phone,
   Mail,
   MapPin,
-  Clock,
   Send,
   MessageSquare,
   ShieldCheck,

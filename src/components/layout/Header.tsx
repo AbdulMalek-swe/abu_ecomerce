@@ -12,7 +12,6 @@ import {
   Truck,
   Menu,
   X,
-  PhoneCall,
   Sparkles,
   MessageCircle,
 } from "lucide-react";

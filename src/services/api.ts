@@ -1,4 +1,4 @@
-import { Product, Order, BackendOrderStatus } from "@/types";
+import { Product, Order } from "@/types";
 import { MOCK_PRODUCTS } from "@/data/products";
 import { MOCK_ORDERS } from "@/data/orders";
 import { mapBackendErrorToBn } from "@/lib/api/errorMapper";
