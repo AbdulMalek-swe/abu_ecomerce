@@ -8,6 +8,8 @@ export const MOCK_ORDERS: Order[] = [
       fullName: "তানভীর আহমেদ",
       phone: "01712345678",
       division: "ঢাকা",
+      district: "ঢাকা",
+      upazila: "উত্তরা",
       city: "ঢাকা উত্তর",
       fullAddress: "বাসা-৪৮, রোড-১১, সেক্টর-০৪, উত্তরা, ঢাকা-১২৩০",
       notes: "বিকাল ৫টার পর ডেলিভারি দিলে ভালো হয়।",
@@ -57,6 +59,8 @@ export const MOCK_ORDERS: Order[] = [
       fullName: "সাদিয়া আফরোজ",
       phone: "01819998877",
       division: "চট্টগ্রাম",
+      district: "চট্টগ্রাম",
+      upazila: "পাঁচলাইশ",
       city: "চট্টগ্রাম সদর",
       fullAddress: "ফ্ল্যাট-বি২, প্রবর্তক মোড়, পাঁচলাইশ, চট্টগ্রাম-৪২০০",
     },
@@ -110,6 +114,8 @@ export const MOCK_ORDERS: Order[] = [
       fullName: "কামরুল হাসান",
       phone: "01911002233",
       division: "সিলেট",
+      district: "সিলেট",
+      upazila: "আম্বরখানা",
       city: "সিলেট সদর",
       fullAddress: "হাউজ-১৪, জালালাবাদ আ/এ, আম্বরখানা, সিলেট",
     },
@@ -140,4 +146,3 @@ export const MOCK_ORDERS: Order[] = [
     ],
   },
 ];
-

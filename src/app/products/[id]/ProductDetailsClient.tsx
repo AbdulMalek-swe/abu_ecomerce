@@ -33,7 +33,7 @@ export function ProductDetailsClient({
   relatedProducts,
 }: ProductDetailsClientProps) {
   const router = useRouter();
-  const { addToCart } = useCart();
+  const { addToCart, showToast } = useCart();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<"desc" | "specs" | "reviews">("desc");
@@ -56,7 +56,7 @@ export function ProductDetailsClient({
       }).catch(() => {});
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert("লিংক কপি করা হয়েছে!");
+      showToast("লিংক কপি করা হয়েছে!", "info");
     }
   };
 

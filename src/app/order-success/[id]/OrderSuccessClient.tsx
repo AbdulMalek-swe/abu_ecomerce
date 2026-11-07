@@ -121,8 +121,10 @@ export function OrderSuccessClient({ orderId }: OrderSuccessClientProps) {
                       {checkoutBn.success.deliveryAddress}:
                     </span>
                     <p className="font-medium text-slate-900 leading-relaxed">
-                      {order.customer.fullAddress}, {order.customer.city},{" "}
-                      {order.customer.division}
+                      {order.customer.fullAddress}
+                      {order.customer.upazila ? `, ${order.customer.upazila}` : ""}
+                      {order.customer.district ? `, ${order.customer.district}` : order.customer.city ? `, ${order.customer.city}` : ""}
+                      {order.customer.division ? `, ${order.customer.division}` : ""}
                     </p>
                   </div>
                 </div>

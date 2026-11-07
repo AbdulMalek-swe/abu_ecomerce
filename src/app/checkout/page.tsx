@@ -6,18 +6,14 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useOrders } from "@/context/OrderContext";
-import { checkoutBn, cartBn, validationBn, commonBn } from "@/locales/bn";
+import { checkoutBn, cartBn, validationBn } from "@/locales/bn";
 import { formatPrice } from "@/lib/formatters/currency";
 import { toBnDigits } from "@/lib/formatters/number";
 import {
-  MapPin,
-  Truck,
-  CreditCard,
   ShieldCheck,
-  ShoppingBag,
-  ArrowRight,
   CheckCircle2,
   AlertCircle,
+  ArrowRight,
 } from "lucide-react";
 
 export default function CheckoutPage() {
@@ -25,19 +21,20 @@ export default function CheckoutPage() {
   const { items, subtotal, clearCart, showToast } = useCart();
   const { createOrder } = useOrders();
 
-  // Form State
+  // Form Fields
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [altPhone, setAltPhone] = useState("");
   const [division, setDivision] = useState("ঢাকা");
-  const [city, setCity] = useState("");
+  const [district, setDistrict] = useState("");
+  const [upazila, setUpazila] = useState("");
   const [fullAddress, setFullAddress] = useState("");
   const [orderNotes, setOrderNotes] = useState("");
   const [deliveryMethod, setDeliveryMethod] = useState<"insideDhaka" | "outsideDhaka" | "express">("insideDhaka");
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "bkash" | "nagad">("cod");
   const [termsAgreed, setTermsAgreed] = useState(true);
 
-  // Errors State
+  // Errors & Submission Locks
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -78,8 +75,12 @@ export default function CheckoutPage() {
       errs.division = validationBn.divisionRequired;
     }
 
-    if (!city.trim()) {
-      errs.city = validationBn.cityRequired;
+    if (!district.trim()) {
+      errs.district = validationBn.districtRequired;
+    }
+
+    if (!upazila.trim()) {
+      errs.upazila = validationBn.upazilaRequired;
     }
 
     if (!fullAddress.trim()) {
@@ -99,6 +100,9 @@ export default function CheckoutPage() {
   const handlePlaceOrder = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Prevent duplicate submission
+    if (isSubmitting) return;
+
     if (items.length === 0) {
       showToast(validationBn.cartEmpty, "error");
       router.push("/cart");
@@ -106,20 +110,23 @@ export default function CheckoutPage() {
     }
 
     if (!validate()) {
-      showToast("অনুগ্রহ করে ফরমের সঠিক তথ্য দিন।", "error");
+      showToast("অনুগ্রহ করে ফরমের প্রয়োজনীয় তথ্য দিন।", "error");
       return;
     }
 
     setIsSubmitting(true);
 
     try {
+      // 1. Create order in mock repository first
       const newOrder = createOrder({
         customer: {
           fullName: fullName.trim(),
           phone: phone.trim(),
           altPhone: altPhone.trim() || undefined,
           division,
-          city: city.trim(),
+          district: district.trim(),
+          upazila: upazila.trim(),
+          city: district.trim(),
           fullAddress: fullAddress.trim(),
           notes: orderNotes.trim() || undefined,
         },
@@ -131,13 +138,13 @@ export default function CheckoutPage() {
         paymentMethod,
       });
 
-      // Clear the cart
+      // 2. Clear cart only AFTER successful order creation
       clearCart();
 
-      // Show Bangla success notification
+      // 3. Show Bangla confirmation notification
       showToast(validationBn.orderPlacedSuccess, "success");
 
-      // Navigate to order confirmation page
+      // 4. Navigate to order confirmation
       router.push(`/order-success/${newOrder.orderId}`);
     } catch {
       showToast(validationBn.somethingWentWrong, "error");
@@ -298,29 +305,56 @@ export default function CheckoutPage() {
                 </select>
               </div>
 
-              {/* City / District */}
+              {/* District */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  {checkoutBn.city} <span className="text-rose-500">*</span>
+                  {checkoutBn.district} <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="text"
-                  value={city}
+                  value={district}
                   onChange={(e) => {
-                    setCity(e.target.value);
-                    if (errors.city) setErrors((prev) => ({ ...prev, city: "" }));
+                    setDistrict(e.target.value);
+                    if (errors.district) setErrors((prev) => ({ ...prev, district: "" }));
                   }}
-                  placeholder="উদা: ঢাকা, চট্টগ্রাম, বগুড়া..."
+                  placeholder={checkoutBn.districtPlaceholder}
                   className={`w-full px-4 py-2.5 text-sm bg-slate-50 border rounded-xl focus:outline-hidden focus:ring-2 focus:bg-white text-slate-900 ${
-                    errors.city
+                    errors.district
                       ? "border-rose-400 focus:ring-rose-500 bg-rose-50/30"
                       : "border-slate-200 focus:ring-emerald-500"
                   }`}
                 />
-                {errors.city && (
+                {errors.district && (
                   <p className="text-rose-600 text-xs mt-1 flex items-center gap-1 font-medium">
                     <AlertCircle className="w-3.5 h-3.5" />
-                    <span>{errors.city}</span>
+                    <span>{errors.district}</span>
+                  </p>
+                )}
+              </div>
+
+              {/* Upazila / Area */}
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  {checkoutBn.upazila} <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={upazila}
+                  onChange={(e) => {
+                    setUpazila(e.target.value);
+                    if (errors.upazila) setErrors((prev) => ({ ...prev, upazila: "" }));
+                  }}
+                  placeholder={checkoutBn.upazilaPlaceholder}
+                  className={`w-full px-4 py-2.5 text-sm bg-slate-50 border rounded-xl focus:outline-hidden focus:ring-2 focus:bg-white text-slate-900 ${
+                    errors.upazila
+                      ? "border-rose-400 focus:ring-rose-500 bg-rose-50/30"
+                      : "border-slate-200 focus:ring-emerald-500"
+                  }`}
+                />
+                {errors.upazila && (
+                  <p className="text-rose-600 text-xs mt-1 flex items-center gap-1 font-medium">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    <span>{errors.upazila}</span>
                   </p>
                 )}
               </div>
@@ -535,7 +569,7 @@ export default function CheckoutPage() {
                   </span>
                 </div>
                 <p className="text-xs text-slate-500 mt-1 pl-7">
-                  {checkoutBn.paymentMethods.bkashDescription} (পেমেন্ট নম্বর: 01700000000 - মার্চেন্ট)
+                  {checkoutBn.paymentMethods.bkashDescription}
                 </p>
               </label>
 
@@ -560,7 +594,7 @@ export default function CheckoutPage() {
                   </span>
                 </div>
                 <p className="text-xs text-slate-500 mt-1 pl-7">
-                  {checkoutBn.paymentMethods.nagadDescription} (পেমেন্ট নম্বর: 01800000000 - মার্চেন্ট)
+                  {checkoutBn.paymentMethods.nagadDescription}
                 </p>
               </label>
             </div>
@@ -569,7 +603,7 @@ export default function CheckoutPage() {
 
         {/* Right Column: Order Review & Submit */}
         <div className="space-y-6">
-          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-2xs space-y-5 sticky top-28">
+          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-2xs space-y-5 sticky top-24">
             <h2 className="font-bold text-slate-900 text-lg pb-3 border-b border-slate-100 flex items-center justify-between">
               <span>{checkoutBn.orderSummary}</span>
               <span className="text-xs font-semibold text-slate-500">
@@ -578,7 +612,7 @@ export default function CheckoutPage() {
             </h2>
 
             {/* Items mini list */}
-            <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
+            <div className="space-y-3 max-h-56 overflow-y-auto pr-1">
               {items.map((item) => (
                 <div key={item.product.id} className="flex items-center gap-3 text-xs">
                   <div className="relative w-12 h-12 rounded-lg bg-slate-50 overflow-hidden shrink-0 border border-slate-100">
@@ -655,11 +689,11 @@ export default function CheckoutPage() {
               )}
             </div>
 
-            {/* Submit Button */}
+            {/* Submit Button with Duplicate Prevention */}
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-4 px-4 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white font-bold text-sm sm:text-base rounded-2xl text-center transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/25 active:scale-95"
+              className="w-full py-4 px-4 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white font-bold text-sm sm:text-base rounded-2xl text-center transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/25 active:scale-95 cursor-pointer"
             >
               {isSubmitting ? (
                 <span>{checkoutBn.processingOrder}</span>
@@ -681,4 +715,3 @@ export default function CheckoutPage() {
     </div>
   );
 }
-

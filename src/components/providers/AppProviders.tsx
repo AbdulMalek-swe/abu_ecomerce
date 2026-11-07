@@ -8,6 +8,7 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { MobileNav } from "@/components/layout/MobileNav";
+import { WhatsAppFloatingButton } from "@/components/ui/WhatsAppFloatingButton";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
@@ -24,6 +25,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
           </Suspense>
           <CartDrawer />
           <ToastContainer />
+          <WhatsAppFloatingButton />
         </div>
       </CartProvider>
     </OrderProvider>

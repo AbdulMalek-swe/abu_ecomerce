@@ -25,6 +25,27 @@ const OrderContext = createContext<OrderContextType | undefined>(undefined);
 
 const ORDERS_STORAGE_KEY = "abu_ecommerce_orders_v1";
 
+/**
+ * Validates untrusted persisted orders data from LocalStorage
+ */
+function validateOrders(data: unknown): Order[] {
+  if (!Array.isArray(data)) return [];
+
+  return data.filter((o): o is Order => {
+    return (
+      o &&
+      typeof o === "object" &&
+      typeof o.orderId === "string" &&
+      o.customer &&
+      typeof o.customer.fullName === "string" &&
+      typeof o.customer.phone === "string" &&
+      Array.isArray(o.items) &&
+      typeof o.total === "number" &&
+      typeof o.status === "string"
+    );
+  });
+}
+
 export function OrderProvider({ children }: { children: React.ReactNode }) {
   const [orders, setOrders] = useState<Order[]>(MOCK_ORDERS);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -33,10 +54,11 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
     try {
       const stored = localStorage.getItem(ORDERS_STORAGE_KEY);
       if (stored) {
-        const parsed: Order[] = JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        const validStored = validateOrders(parsed);
         // Merge stored with mock so mock orders are always searchable
         const mockMap = new Map(MOCK_ORDERS.map((o) => [o.orderId, o]));
-        parsed.forEach((o) => mockMap.set(o.orderId, o));
+        validStored.forEach((o) => mockMap.set(o.orderId, o));
         setOrders(Array.from(mockMap.values()));
       }
     } catch {
@@ -67,10 +89,10 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       orderId: newOrderId,
       customer: input.customer,
       items: input.items,
-      subtotal: input.subtotal,
-      shippingCost: input.shippingCost,
-      discount: input.discount,
-      total: input.total,
+      subtotal: Math.max(0, input.subtotal),
+      shippingCost: Math.max(0, input.shippingCost),
+      discount: Math.max(0, input.discount),
+      total: Math.max(0, input.total),
       status: initialStatus, // Raw backend status: "pending"
       paymentMethod: input.paymentMethod,
       createdAt: now.toISOString(),
@@ -78,7 +100,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         {
           status: "pending",
           timestamp: `${now.toLocaleDateString("en-GB")} ${now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}`,
-          note: "অর্ডারটি সফলভাবে ডাটাবেজে সংরক্ষিত হয়েছে।",
+          note: "অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে।",
         },
       ],
     };
@@ -97,10 +119,16 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
     const cleanId = orderId.trim().toLowerCase();
     const cleanPhone = phone.trim().replace(/\D/g, "");
 
+    // Strict security check: must provide both ID and at least 11 digits
+    if (!cleanId || cleanPhone.length < 11) {
+      return undefined;
+    }
+
     return orders.find((o) => {
       const idMatch = o.orderId.toLowerCase() === cleanId;
       const orderPhoneClean = o.customer.phone.replace(/\D/g, "");
-      const phoneMatch = orderPhoneClean.endsWith(cleanPhone) || cleanPhone.endsWith(orderPhoneClean);
+      const phoneMatch =
+        orderPhoneClean.endsWith(cleanPhone) || cleanPhone.endsWith(orderPhoneClean);
       return idMatch && phoneMatch;
     });
   };
@@ -126,4 +154,3 @@ export function useOrders() {
   }
   return context;
 }
-

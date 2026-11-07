@@ -29,33 +29,70 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = "abu_ecommerce_cart_v1";
 
+/**
+ * Validates untrusted persisted cart data from LocalStorage
+ */
+function validateCartItems(data: unknown): CartItem[] {
+  if (!Array.isArray(data)) return [];
+
+  const validItems: CartItem[] = [];
+
+  for (const item of data) {
+    if (
+      item &&
+      typeof item === "object" &&
+      item.product &&
+      typeof item.product.id === "string" &&
+      typeof item.product.name === "string" &&
+      typeof item.product.price === "number" &&
+      item.product.price >= 0 &&
+      typeof item.quantity === "number" &&
+      Number.isInteger(item.quantity) &&
+      item.quantity > 0
+    ) {
+      validItems.push({
+        product: {
+          ...item.product,
+          price: Math.max(0, Number(item.product.price)),
+        },
+        quantity: Math.max(1, Math.min(99, Math.floor(item.quantity))),
+      });
+    }
+  }
+
+  return validItems;
+}
+
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [toasts, setToasts] = useState<ToastState[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Initialize from LocalStorage
+  // Initialize and validate from LocalStorage
   useEffect(() => {
     try {
       const stored = localStorage.getItem(CART_STORAGE_KEY);
       if (stored) {
-        setItems(JSON.parse(stored));
+        const parsed = JSON.parse(stored);
+        const validated = validateCartItems(parsed);
+        setItems(validated);
       }
     } catch {
-      // ignore parsing errors
+      // safely fallback to empty array if json corrupted
+      setItems([]);
     } finally {
       setIsLoaded(true);
     }
   }, []);
 
-  // Sync to LocalStorage on updates
+  // Sync to LocalStorage safely
   useEffect(() => {
     if (isLoaded) {
       try {
         localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
       } catch {
-        // ignore storage errors
+        // ignore quota errors
       }
     }
   }, [items, isLoaded]);
@@ -74,7 +111,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const addToCart = (product: Product, quantity: number = 1) => {
-    if (quantity < 1) return;
+    const safeQty = Math.max(1, Math.min(99, Math.floor(Number(quantity) || 1)));
+    if (!product || !product.id || safeQty < 1) return;
 
     setItems((prevItems) => {
       const existingIndex = prevItems.findIndex((item) => item.product.id === product.id);
@@ -82,11 +120,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const updated = [...prevItems];
         updated[existingIndex] = {
           ...updated[existingIndex],
-          quantity: updated[existingIndex].quantity + quantity,
+          quantity: Math.min(99, updated[existingIndex].quantity + safeQty),
         };
         return updated;
       } else {
-        return [...prevItems, { product, quantity }];
+        return [
+          ...prevItems,
+          {
+            product: {
+              ...product,
+              price: Math.max(0, Number(product.price) || 0),
+            },
+            quantity: safeQty,
+          },
+        ];
       }
     });
 
@@ -94,14 +141,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateQuantity = (productId: string, quantity: number) => {
-    if (quantity <= 0) {
+    const safeQty = Math.floor(Number(quantity) || 0);
+
+    if (safeQty <= 0) {
       removeFromCart(productId);
       return;
     }
 
     setItems((prevItems) =>
       prevItems.map((item) =>
-        item.product.id === productId ? { ...item, quantity } : item
+        item.product.id === productId
+          ? { ...item, quantity: Math.min(99, safeQty) }
+          : item
       )
     );
   };
@@ -115,8 +166,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setItems([]);
   };
 
-  const totalItemsCount = items.reduce((total, item) => total + item.quantity, 0);
-  const subtotal = items.reduce((total, item) => total + item.product.price * item.quantity, 0);
+  // Recalculate totals through business logic
+  const totalItemsCount = items.reduce((total, item) => total + Math.max(0, item.quantity), 0);
+  const subtotal = items.reduce(
+    (total, item) => total + Math.max(0, item.product.price) * Math.max(0, item.quantity),
+    0
+  );
 
   return (
     <CartContext.Provider
@@ -147,4 +202,3 @@ export function useCart() {
   }
   return context;
 }
-

@@ -14,6 +14,7 @@ import {
   X,
   PhoneCall,
   Sparkles,
+  MessageCircle,
 } from "lucide-react";
 
 export function Header() {
@@ -31,18 +32,11 @@ export function Header() {
     }
   };
 
-  const navCategories = [
-    { label: navigationBn.categoryLabels.all, href: "/products" },
-    { label: navigationBn.categoryLabels.electronics, href: "/products?category=electronics" },
-    { label: navigationBn.categoryLabels.fashion, href: "/products?category=fashion" },
-    { label: navigationBn.categoryLabels.grocery, href: "/products?category=grocery" },
-    { label: navigationBn.categoryLabels.beauty, href: "/products?category=beauty" },
-    { label: navigationBn.categoryLabels.home, href: "/products?category=home" },
-    { label: navigationBn.categoryLabels.accessories, href: "/products?category=accessories" },
-  ];
+  const WHATSAPP_NUMBER = "8801700000000";
+  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("আসসালামু আলাইকুম, আমি আবূ ই-কমার্স থেকে অর্ডার / তথ্য জানতে চাই।")}`;
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
       {/* Top Announcement Bar */}
       <div className="bg-emerald-800 text-emerald-50 text-xs py-1.5 px-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -59,49 +53,73 @@ export function Header() {
               <span>{navigationBn.topTrack}</span>
             </Link>
             <span className="opacity-40">|</span>
-            <Link
-              href="/contact"
-              className="hover:text-white flex items-center gap-1 transition-colors"
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white flex items-center gap-1 text-emerald-200 transition-colors"
             >
-              <PhoneCall className="w-3.5 h-3.5" />
-              <span>{commonBn.footer.hotline}</span>
-            </Link>
+              <MessageCircle className="w-3.5 h-3.5 text-emerald-300" />
+              <span>{navigationBn.whatsappContact}</span>
+            </a>
           </div>
         </div>
       </div>
 
       {/* Main Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5">
         <div className="flex items-center justify-between gap-4">
-          {/* Mobile Menu Button & Brand */}
+          {/* Logo & Website Name */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+              className="md:hidden p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
               aria-label={isMobileMenuOpen ? navigationBn.closeMenu : navigationBn.openMenu}
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-700 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-700/20 group-hover:scale-105 transition-transform">
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-emerald-700 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-700/20 group-hover:scale-105 transition-transform">
                 <ShoppingBag className="w-5 h-5" />
               </div>
               <div className="flex flex-col">
                 <span className="font-extrabold text-xl sm:text-2xl text-slate-900 tracking-tight leading-tight">
                   {commonBn.appName}
                 </span>
-                <span className="text-[10px] sm:text-xs text-slate-500 font-medium">
+                <span className="text-[10px] sm:text-xs text-slate-500 font-medium hidden sm:inline">
                   {commonBn.tagline}
                 </span>
               </div>
             </Link>
           </div>
 
-          {/* Search Bar (Desktop / Tablet) */}
+          {/* Navigation Links: All Products */}
+          <nav className="hidden md:flex items-center gap-1">
+            <Link
+              href="/"
+              className="px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-emerald-700 hover:bg-slate-100 rounded-xl transition-colors"
+            >
+              {navigationBn.home}
+            </Link>
+            <Link
+              href="/products"
+              className="px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-emerald-700 hover:bg-slate-100 rounded-xl transition-colors"
+            >
+              {navigationBn.allProducts}
+            </Link>
+            <Link
+              href="/track-order"
+              className="px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-emerald-700 hover:bg-slate-100 rounded-xl transition-colors"
+            >
+              {navigationBn.trackOrder}
+            </Link>
+          </nav>
+
+          {/* Search Bar (Desktop) */}
           <form
             onSubmit={handleSearch}
-            className="hidden md:flex flex-1 max-w-xl mx-4"
+            className="hidden lg:flex flex-1 max-w-md mx-2"
           >
             <div className="relative w-full">
               <input
@@ -109,37 +127,42 @@ export function Header() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder={navigationBn.searchPlaceholder}
-                className="w-full pl-4 pr-11 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-full focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:border-emerald-500 transition-all text-slate-800 placeholder:text-slate-400"
+                className="w-full pl-4 pr-10 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-full focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-800 placeholder:text-slate-400"
               />
               <button
                 type="submit"
                 aria-label={navigationBn.searchButton}
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center transition-colors shadow-xs"
+                className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center transition-colors"
               >
-                <Search className="w-4 h-4" />
+                <Search className="w-3.5 h-3.5" />
               </button>
             </div>
           </form>
 
-          {/* Action Links & Cart */}
-          <div className="flex items-center gap-2 sm:gap-4">
-            <Link
-              href="/track-order"
-              className="hidden sm:flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 rounded-xl transition-colors border border-transparent hover:border-emerald-200"
+          {/* Action Area: WhatsApp & Cart */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* WhatsApp Contact Button */}
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={navigationBn.whatsappContact}
+              className="hidden sm:flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100/90 rounded-xl transition-colors border border-emerald-200"
             >
-              <Truck className="w-4 h-4 text-emerald-600" />
-              <span>{navigationBn.trackOrder}</span>
-            </Link>
+              <MessageCircle className="w-4 h-4 text-emerald-600" />
+              <span>{navigationBn.whatsapp}</span>
+            </a>
 
+            {/* Cart Icon & Item Count */}
             <button
               onClick={() => setIsCartOpen(true)}
               aria-label={navigationBn.cart}
-              className="relative flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-50 text-emerald-800 hover:bg-emerald-100/80 transition-colors border border-emerald-200/80 font-semibold text-xs sm:text-sm shadow-xs"
+              className="relative flex items-center gap-2 px-3 sm:px-3.5 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition-colors font-semibold text-xs sm:text-sm shadow-sm active:scale-95"
             >
-              <ShoppingBag className="w-4 h-4 text-emerald-700" />
+              <ShoppingBag className="w-4 h-4" />
               <span className="hidden sm:inline">{navigationBn.cart}</span>
               {totalItemsCount > 0 && (
-                <span className="px-2 py-0.5 text-xs font-bold bg-emerald-700 text-white rounded-full">
+                <span className="px-1.5 py-0.2 bg-white text-emerald-800 text-[11px] font-bold rounded-full">
                   {toBnDigits(totalItemsCount)}
                 </span>
               )}
@@ -147,20 +170,20 @@ export function Header() {
           </div>
         </div>
 
-        {/* Mobile Search Input */}
-        <form onSubmit={handleSearch} className="mt-3 md:hidden">
+        {/* Search Bar (Mobile / Tablet) */}
+        <form onSubmit={handleSearch} className="mt-2.5 lg:hidden">
           <div className="relative w-full">
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder={navigationBn.searchPlaceholder}
-              className="w-full pl-4 pr-10 py-2 text-sm bg-slate-50 border border-slate-300 rounded-full focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-800 placeholder:text-slate-400"
+              className="w-full pl-4 pr-10 py-2 text-xs bg-slate-50 border border-slate-300 rounded-full focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:bg-white text-slate-800 placeholder:text-slate-400"
             />
             <button
               type="submit"
               aria-label={navigationBn.searchButton}
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center"
+              className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center"
             >
               <Search className="w-3.5 h-3.5" />
             </button>
@@ -168,89 +191,68 @@ export function Header() {
         </form>
       </div>
 
-      {/* Categories Bar (Desktop) */}
-      <nav aria-label="ক্যাটাগরি মেনু" className="hidden lg:block border-t border-slate-100 bg-slate-50/70">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-1 overflow-x-auto py-2 scrollbar-none">
-            {navCategories.map((cat, i) => (
-              <Link
-                key={i}
-                href={cat.href}
-                className="px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:text-emerald-700 hover:bg-white rounded-lg transition-colors whitespace-nowrap shadow-2xs border border-transparent hover:border-slate-200"
-              >
-                {cat.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </nav>
-
-      {/* Mobile Menu Drawer */}
+      {/* Mobile Drawer */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 flex">
+        <div className="md:hidden fixed inset-0 z-50 flex">
           <div
-            className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs"
+            className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs"
             onClick={() => setIsMobileMenuOpen(false)}
             aria-hidden="true"
           />
-          <div className="relative w-72 max-w-[80vw] bg-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-200">
-            <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-              <span className="font-bold text-slate-800 text-sm">
+          <div className="relative w-72 max-w-[80vw] bg-white h-full shadow-2xl flex flex-col z-10 p-5 animate-in slide-in-from-left duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+              <span className="font-bold text-slate-900 text-sm">
                 {navigationBn.menuTitle}
               </span>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
                 aria-label={navigationBn.closeMenu}
-                className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-200"
+                className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-2">
+            <div className="space-y-2 text-sm font-semibold text-slate-800">
               <Link
                 href="/"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-800 hover:bg-emerald-50 hover:text-emerald-700"
+                className="block px-3 py-2.5 rounded-xl hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
               >
                 {navigationBn.home}
               </Link>
               <Link
                 href="/products"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-800 hover:bg-emerald-50 hover:text-emerald-700"
+                className="block px-3 py-2.5 rounded-xl hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
               >
                 {navigationBn.allProducts}
               </Link>
               <Link
                 href="/track-order"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-800 hover:bg-emerald-50 hover:text-emerald-700"
+                className="block px-3 py-2.5 rounded-xl hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
               >
                 {navigationBn.trackOrder}
               </Link>
               <Link
                 href="/contact"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-800 hover:bg-emerald-50 hover:text-emerald-700"
+                className="block px-3 py-2.5 rounded-xl hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
               >
                 {navigationBn.contact}
               </Link>
 
-              <div className="pt-3 border-t border-slate-100">
-                <p className="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-                  {navigationBn.categories}
-                </p>
-                {navCategories.map((cat, i) => (
-                  <Link
-                    key={i}
-                    href={cat.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                  >
-                    {cat.label}
-                  </Link>
-                ))}
+              <div className="pt-4 border-t border-slate-100">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-emerald-50 text-emerald-800 font-semibold text-xs"
+                >
+                  <MessageCircle className="w-4 h-4 text-emerald-600" />
+                  <span>{navigationBn.whatsappContact}</span>
+                </a>
               </div>
             </div>
           </div>
@@ -259,4 +261,3 @@ export function Header() {
     </header>
   );
 }
-
