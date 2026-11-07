@@ -83,7 +83,7 @@ export function ProductCard({ product }: ProductCardProps) {
               <span className="font-bold text-slate-700 text-[10px] sm:text-xs">
                 {toBnDigits(product.rating.toFixed(1))}
               </span>
-              <span className="text-[9px] sm:text-[11px] text-slate-400 hidden xs:inline">
+              <span className="text-[9px] sm:text-[11px] text-slate-400 hidden sm:inline">
                 ({toBnDigits(product.reviewsCount)})
               </span>
             </div>
@@ -100,7 +100,7 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Pricing & Add to Cart Action */}
         <div className="mt-2.5 sm:mt-3 pt-2 sm:pt-3 border-t border-slate-100 flex items-center justify-between gap-1.5">
           <div className="min-w-0 flex-1">
-            <div className="font-bold text-xs sm:text-base text-slate-900 truncate">
+            <div className="font-bold text-sm sm:text-base text-slate-900 truncate">
               {formatPrice(product.price)}
             </div>
             {product.originalPrice && product.originalPrice > product.price && (
@@ -114,7 +114,7 @@ export function ProductCard({ product }: ProductCardProps) {
             onClick={() => addToCart(product, 1)}
             disabled={!product.inStock}
             aria-label={`${product.name} - ${productsBn.addToCart}`}
-            className="flex items-center justify-center gap-1 p-2 sm:px-3 sm:py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl transition-colors shadow-2xs active:scale-95 shrink-0 min-w-[34px] min-h-[34px] sm:min-w-fit"
+            className="flex items-center justify-center gap-1 p-2 sm:px-3 sm:py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl transition-colors shadow-2xs active:scale-95 shrink-0 min-w-[36px] min-h-[36px] sm:min-w-fit"
           >
             <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span className="hidden md:inline">{productsBn.addToCart}</span>

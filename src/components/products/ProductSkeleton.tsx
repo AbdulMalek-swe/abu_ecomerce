@@ -29,7 +29,7 @@ export function ProductSkeleton() {
 
 export function ProductSkeletonGrid({ count = 6 }: { count?: number }) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-5">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-5 lg:gap-6">
       {Array.from({ length: count }).map((_, idx) => (
         <ProductSkeleton key={idx} />
       ))}
