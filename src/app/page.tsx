@@ -49,7 +49,7 @@ export default function HomePage() {
       </section>
 
       {/* All Products Listing with Infinite Scroll */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+      <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-6">
         <div className="flex items-center justify-between pb-4 mb-6 border-b border-slate-200">
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2">

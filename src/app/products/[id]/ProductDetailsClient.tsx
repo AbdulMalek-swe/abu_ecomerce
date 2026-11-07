@@ -61,7 +61,7 @@ export function ProductDetailsClient({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8 sm:space-y-12">
       {/* Breadcrumb */}
       <nav aria-label="ব্রেডক্রাম্ব" className="text-xs sm:text-sm text-slate-500 flex items-center gap-2">
         <Link href="/" className="hover:text-emerald-700">
@@ -407,7 +407,7 @@ export function ProductDetailsClient({
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-5">
             {relatedProducts.map((relProduct) => (
               <ProductCard key={relProduct.id} product={relProduct} />
             ))}
