@@ -31,7 +31,9 @@ export interface CustomerInfo {
   phone: string;
   altPhone?: string;
   division: string;
-  city: string;
+  district: string;
+  upazila: string;
+  city?: string;
   fullAddress: string;
   notes?: string;
 }
@@ -55,4 +57,3 @@ export interface Order {
   createdAt: string;
   timeline: OrderTimelineItem[];
 }
-

@@ -21,10 +21,12 @@ export const checkoutBn = {
   altPhoneNumberPlaceholder: "উদা: 01800000000",
   division: "বিভাগ",
   selectDivision: "বিভাগ নির্বাচন করুন",
-  city: "জেলা / শহর",
-  selectCity: "জেলা নির্বাচন করুন",
+  district: "জেলা",
+  districtPlaceholder: "জেলা নির্বাচন বা লিখুন (উদা: ঢাকা, চট্টগ্রাম...)",
+  upazila: "থানা / উপজেলা",
+  upazilaPlaceholder: "থানা বা উপজেলা লিখুন (উদা: ধানমন্ডি, মিরপুর, পাঁচলাইশ...)",
   fullAddress: "সম্পূর্ণ ডেলিভারি ঠিকানা",
-  fullAddressPlaceholder: "বাসা নং, রোড নং, এলাকা, থানা ও পোস্ট কোড বিস্তারিত লিখুন...",
+  fullAddressPlaceholder: "বাসা নং, রোড নং, এলাকা বিস্তারিত লিখুন...",
   orderNotes: "বিশেষ নির্দেশনা (ঐচ্ছিক)",
   orderNotesPlaceholder: "ডেলিভারি সময় বা পণ্য সম্পর্কিত কোনো বিশেষ নির্দেশনা থাকলে লিখুন...",
 
@@ -56,7 +58,7 @@ export const checkoutBn = {
   discount: "ডিসকাউন্ট",
   grandTotal: "সর্বমোট প্রদেয় টাকা",
   termsAgreement: "অর্ডার কনফার্ম করার মাধ্যমে আপনি আমাদের শর্তাবলী ও নিয়মাবলীর সাথে সম্মতি প্রকাশ করছেন।",
-  placeOrder: "অর্ডার নিশ্চিত করুন",
+  placeOrder: "অর্ডার নিশ্চিত করুন (ক্যাশ অন ডেলিভারি)",
   processingOrder: "অর্ডার প্রসেস হচ্ছে...",
 
   // Order Success Page
@@ -75,4 +77,3 @@ export const checkoutBn = {
     backToHomeBtn: "হোমে ফিরে যান",
   },
 } as const;
-

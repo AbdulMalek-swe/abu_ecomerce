@@ -7,6 +7,8 @@ export const navigationBn = {
   announcement: "সারা দেশে ক্যাশ অন ডেলিভারি সুবিধা! ৫,০০০ টাকার অর্ডারে ফ্রি ডেলিভারি!",
   topHelp: "সাহায্য প্রয়োজন?",
   topTrack: "অর্ডার ট্র্যাক",
+  whatsapp: "হোয়াটসঅ্যাপ",
+  whatsappContact: "হোয়াটসঅ্যাপে যোগাযোগ",
 
   // Main Nav Links
   home: "হোম",
@@ -47,4 +49,3 @@ export const navigationBn = {
   closeMenu: "মেনু বন্ধ করুন",
   openMenu: "মেনু খুলুন",
 } as const;
-

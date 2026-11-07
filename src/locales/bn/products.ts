@@ -12,6 +12,7 @@ export const productsBn = {
   flashDealsSubtitle: "সীমিত সময়ের জন্য বিশেষ ছাড়",
   newArrivalsTitle: "নতুন কালেকশন",
   relatedProductsTitle: "সম্পর্কিত পণ্যসমূহ",
+  allProductsListing: "সকল পণ্য",
 
   // Product Card & UI Labels
   productDetails: "পণ্যের বিবরণ",
@@ -53,6 +54,11 @@ export const productsBn = {
   showingResults: (shown: string, total: string) => `মোট ${total} টি পণ্যের মধ্যে ${shown} টি দেখানো হচ্ছে`,
   noProductsMatch: "আপনার পছন্দের সাথে মিল রেখে কোনো পণ্য পাওয়া যায়নি। ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন।",
 
+  // Infinite Scroll & Skeletons
+  loadingMore: "আরও পণ্য লোড হচ্ছে...",
+  endOfList: "সব পণ্য দেখানো সম্পন্ন হয়েছে",
+  loadError: "পণ্য লোড করতে সমস্যা হয়েছে। পুনরায় চেষ্টা করুন।",
+
   // Details Page Tabs
   tabs: {
     description: "পণ্যের বিবরণ",
@@ -67,4 +73,3 @@ export const productsBn = {
   returnBadge: "৭ দিনের সহজ রিটার্ন পলিসি",
   shareProduct: "শেয়ার করুন",
 } as const;
-

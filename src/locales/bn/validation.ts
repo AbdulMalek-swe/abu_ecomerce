@@ -10,7 +10,8 @@ export const validationBn = {
   phoneInvalid: "সঠিক মোবাইল নম্বর প্রদান করুন (উদা: 017XXXXXXXX)।",
   altPhoneInvalid: "বিকল্প মোবাইল নম্বর সঠিক ফরম্যাটে প্রদান করুন।",
   divisionRequired: "অনুগ্রহ করে আপনার বিভাগ নির্বাচন করুন।",
-  cityRequired: "অনুগ্রহ করে আপনার জেলা / শহর নির্বাচন করুন।",
+  districtRequired: "অনুগ্রহ করে আপনার জেলা লিখুন।",
+  upazilaRequired: "অনুগ্রহ করে আপনার থানা বা উপজেলা লিখুন।",
   addressRequired: "সম্পূর্ণ ঠিকানা লিখুন।",
   addressMinLength: "ঠিকানা কমপক্ষে ১০ অক্ষরের বিস্তারিত হতে হবে।",
   selectProduct: "অনুগ্রহ করে একটি পণ্য নির্বাচন করুন।",
@@ -24,7 +25,7 @@ export const validationBn = {
   productRemovedFromCart: "পণ্যটি কার্ট থেকে অপসারণ করা হয়েছে।",
   cartUpdated: "কার্ট সফলভাবে আপডেট করা হয়েছে।",
   orderPlacedSuccess: "অর্ডার সফলভাবে সম্পন্ন হয়েছে।",
-  orderNotFound: "কোনো অর্ডার পাওয়া যায়নি।",
+  orderNotFound: "কোনো অর্ডার পাওয়া যায়নি। সঠিক অর্ডার নম্বর ও ফোন নম্বর প্রদান করুন।",
   orderTrackFailed: "অর্ডারের তথ্য লোড করা যায়নি।",
 
   // Generic System & Error States
@@ -40,4 +41,3 @@ export const validationBn = {
   contactMessageRequired: "আপনার বার্তাটি লিখুন।",
   contactMessageSent: "আপনার বার্তাটি সফলভাবে পাঠানো হয়েছে। আমরা শীঘ্রই যোগাযোগ করব।",
 } as const;
-

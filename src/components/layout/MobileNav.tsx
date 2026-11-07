@@ -45,11 +45,10 @@ export function MobileNav() {
             <Link
               key={link.href}
               href={link.href}
-              className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-colors ${
-                link.isActive
-                  ? "text-emerald-700 font-bold"
-                  : "text-slate-500 hover:text-slate-800"
-              }`}
+              className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-colors ${link.isActive
+                ? "text-emerald-700 font-bold"
+                : "text-slate-500 hover:text-slate-800"
+                }`}
             >
               <Icon className="w-5 h-5" />
               <span className="text-[11px] mt-0.5">{link.name}</span>
@@ -79,11 +78,10 @@ export function MobileNav() {
             <Link
               key={link.href}
               href={link.href}
-              className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-colors ${
-                link.isActive
-                  ? "text-emerald-700 font-bold"
-                  : "text-slate-500 hover:text-slate-800"
-              }`}
+              className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-colors ${link.isActive
+                ? "text-emerald-700 font-bold"
+                : "text-slate-500 hover:text-slate-800"
+                }`}
             >
               <Icon className="w-5 h-5" />
               <span className="text-[11px] mt-0.5">{link.name}</span>
